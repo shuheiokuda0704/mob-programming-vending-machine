@@ -13,4 +13,8 @@ class VendingMachine
   def collected_amount
     @collected_amount
   end
+
+  def refund
+    @collected_amount.tap { @collected_amount = 0 }
+  end
 end

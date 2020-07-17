@@ -35,4 +35,13 @@ RSpec.describe 'Vending Machine' do
     end
     expect(vending_machine.collected_amount).to eq(100)
   end
+
+  example "can refund collected amount" do
+    10.times do
+      vending_machine.insert_money(10)
+    end
+    expect(vending_machine.collected_amount).to eq(100)
+    expect(vending_machine.refund).to eq(100)
+    expect(vending_machine.collected_amount).to eq(0)
+  end
 end
