@@ -5,9 +5,9 @@ class VendingMachine
   end
 
   def insert_money(amount)
-    return unless [10, 50, 100, 500, 1000].include?(amount)
+    return amount unless [10, 50, 100, 500, 1000].include?(amount)
     @collected_amount += amount
-    true
+    0
   end
 
   def collected_amount

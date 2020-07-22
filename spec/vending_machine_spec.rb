@@ -16,16 +16,16 @@ RSpec.describe 'Vending Machine' do
   end
 
   example "can insert 10, 50, 100, 500 coins and 1000 yen bills" do
-    expect(vending_machine.insert_money(10)).to be true
+    expect(vending_machine.insert_money(10)).to be 0
   end
 
   example "cannot insert other than 10, 50, 100, 500 coins and 1000 yen bills" do
-    expect(vending_machine.insert_money(1)).to be nil
+    expect(vending_machine.insert_money(1)).to be 1
   end
 
   example "can insert money multiple times" do
     10.times do
-      expect(vending_machine.insert_money(10)).to be true
+      expect(vending_machine.insert_money(10)).to be 0
     end
   end
 
@@ -44,4 +44,12 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.refund).to eq(100)
     expect(vending_machine.collected_amount).to eq(0)
   end
+
+  example "1, 5, 10000 not be added to the total money and refund it to user" do
+    [1, 5, 10000].each do |money|
+      expect(vending_machine.insert_money(money)).to eq(money)
+      expect(vending_machine.refund).to eq(0)
+    end
+  end
+
 end
