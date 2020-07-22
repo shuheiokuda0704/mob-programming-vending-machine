@@ -1,5 +1,6 @@
 require 'spec_helper'
 require './lib/vending_machine'
+require './lib/drink'
 
 RSpec.describe 'Vending Machine' do
   example "test" do
@@ -50,6 +51,11 @@ RSpec.describe 'Vending Machine' do
       expect(vending_machine.insert_money(money)).to eq(money)
       expect(vending_machine.refund).to eq(0)
     end
+  end
+
+  example "store 5 Cokes" do
+    coke = Drink.new(price: 120, name: "Coke")
+    vending_machine.store(coke, 5)
   end
 
 end

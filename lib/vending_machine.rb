@@ -2,6 +2,7 @@ class VendingMachine
 
   def initialize
     @collected_amount = 0
+    @stock = Struct.new(:drink, :count)
   end
 
   def insert_money(amount)
@@ -16,5 +17,9 @@ class VendingMachine
 
   def refund
     @collected_amount.tap { @collected_amount = 0 }
+  end
+
+  def store(drink, count)
+    @stock.new(drink, count)
   end
 end
