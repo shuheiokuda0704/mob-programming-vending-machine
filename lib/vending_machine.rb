@@ -2,6 +2,7 @@ class VendingMachine
 
   def initialize
     @collected_amount = 0
+    @sales_amount = 0
     @stock = Hash.new
   end
 
@@ -26,5 +27,17 @@ class VendingMachine
 
   def stored_drinks
     @stock
+  end
+
+  def purchase_drink(drink)
+    return false if @collected_amount < drink.price
+    @stock[drink.name.to_sym][:count] -= 1
+    @collected_amount -= drink.price
+    @sales_amount += drink.price
+    drink
+  end
+
+  def sales_amount
+    @sales_amount
   end
 end

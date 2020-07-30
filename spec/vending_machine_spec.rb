@@ -66,4 +66,25 @@ RSpec.describe 'Vending Machine' do
     # get info
     expect(vending_machine.stored_drinks).to eq({:coke=>{:price=>120, :count=>5}})
   end
+
+  example "whether Coke can be purchased with inserted money " do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 1)
+    expect(vending_machine.insert_money(10))
+    expect(vending_machine.insert_money(10))
+    expect(vending_machine.insert_money(100))
+    expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    expect(vending_machine.collected_amount).to eq(0)
+    expect(vending_machine.sales_amount).to eq(120)
+  end
+
+  example "whether Coke cannot be purchased without sufficient money" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 1)
+    expect(vending_machine.insert_money(10))
+    expect(vending_machine.insert_money(10))
+    expect(vending_machine.purchase_drink(coke)).to eq(false)
+    expect(vending_machine.collected_amount).to eq(20)
+    expect(vending_machine.sales_amount).to eq(0)
+  end
 end
