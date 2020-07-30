@@ -2,7 +2,7 @@ class VendingMachine
 
   def initialize
     @collected_amount = 0
-    @stock = Struct.new(:drink, :count)
+    @stock = Hash.new
   end
 
   def insert_money(amount)
@@ -20,6 +20,11 @@ class VendingMachine
   end
 
   def store(drink, count)
-    @stock.new(drink, count)
+    @stock[drink.name.to_sym] = {price: drink.price, count: count}
+    true
+  end
+
+  def stored_drinks
+    @stock
   end
 end

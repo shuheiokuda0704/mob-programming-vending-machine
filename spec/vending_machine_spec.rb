@@ -1,6 +1,7 @@
 require 'spec_helper'
 require './lib/vending_machine'
 require './lib/drink'
+require 'byebug'
 
 RSpec.describe 'Vending Machine' do
   example "test" do
@@ -55,7 +56,14 @@ RSpec.describe 'Vending Machine' do
 
   example "store 5 Cokes" do
     coke = Drink.new(price: 120, name: "Coke")
-    vending_machine.store(coke, 5)
+    expect(vending_machine.store(coke, 5)).to eq(true)
   end
 
+  example "can get information of stored drinks" do
+    # store 5 cokes
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 5)
+    # get info
+    expect(vending_machine.stored_drinks).to eq({:coke=>{:price=>120, :count=>5}})
+  end
 end
