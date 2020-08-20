@@ -30,7 +30,7 @@ class VendingMachine
   end
 
   def purchase_drink(drink)
-    return false if @collected_amount < drink.price
+    return false if (@collected_amount < drink.price) || (@stock[drink.name.to_sym][:count] == 0)
     @stock[drink.name.to_sym][:count] -= 1
     @collected_amount -= drink.price
     @sales_amount += drink.price

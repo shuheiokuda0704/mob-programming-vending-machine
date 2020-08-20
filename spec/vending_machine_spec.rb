@@ -87,4 +87,76 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.collected_amount).to eq(20)
     expect(vending_machine.sales_amount).to eq(0)
   end
+
+  example "purchase is executed when Coke can be purchased, reduce stock of Coke and increase sales amount" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 5)
+    vending_machine.insert_money(100)
+    vending_machine.insert_money(10)
+    vending_machine.insert_money(10)
+    expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    expect(vending_machine.sales_amount).to eq(120)
+    expect(vending_machine.stored_drinks[:coke][:count]).to eq(4)
+  end
+
+  example "When Coke cannot be purchased, stock of Coke is not reduced and sales amount donot change" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 5)
+    vending_machine.insert_money(100)
+    expect(vending_machine.purchase_drink(coke)).to eq(false)
+    expect(vending_machine.sales_amount).to eq(0)
+    expect(vending_machine.stored_drinks[:coke][:count]).to eq(5)
+  end
+
+  # TODO: confirm later
+  example "purchase is executed when Coke can NOT be purchased, do nothing" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 0)
+    vending_machine.insert_money(500)
+    expect(vending_machine.purchase_drink(coke)).to eq(false)
+    expect(vending_machine.sales_amount).to eq(0)
+  end
+
+  example "Can get current sales amount" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 10)
+    vending_machine.insert_money(1000)
+    5.times do
+      expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    end
+    expect(vending_machine.sales_amount).to eq(600)
+  end
+
+  example "Can get current sales amount when insufficient balance" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 10)
+    vending_machine.insert_money(500)
+    4.times do
+      expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    end
+    expect(vending_machine.purchase_drink(coke)).to eq(false)
+    expect(vending_machine.sales_amount).to eq(480)
+  end
+
+  example "refund is executed, refund money" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 10)
+    vending_machine.insert_money(500)
+    4.times do
+      expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    end
+    expect(vending_machine.refund).to eq(20)
+  end
+
+  example "refund is 0 when purchased for full amount" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 10)
+    vending_machine.insert_money(500)
+    vending_machine.insert_money(100)
+    5.times do
+      expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    end
+    expect(vending_machine.refund).to eq(0)
+  end
+
 end
