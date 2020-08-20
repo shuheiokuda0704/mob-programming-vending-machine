@@ -172,7 +172,7 @@ RSpec.describe 'Vending Machine' do
   end
 
 
-  #TODO
+  #TODO - confirm whether output should be drink name or all drink details
   example "can get total amount of inserted money and list of purchasable drinks" do
     coke = Drink.new(price: 120, name: "coke")
     redbull = Drink.new(price: 200 , name: "redbull")
