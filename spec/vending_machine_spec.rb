@@ -159,4 +159,30 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.refund).to eq(0)
   end
 
+  example "3 types of drinks can be saved" do
+    coke = Drink.new(price: 120, name: "coke")
+    redbull = Drink.new(price: 200 , name: "redbull")
+    water = Drink.new(price: 120, name: "water")
+    vending_machine.store(coke, 10)
+    vending_machine.store(redbull, 10)
+    vending_machine.store(water, 10)
+    expect(vending_machine.stored_drinks[:coke][:count]).to eq(10)
+    expect(vending_machine.stored_drinks[:redbull][:count]).to eq(10)
+    expect(vending_machine.stored_drinks[:water][:count]).to eq(10)
+  end
+
+
+  #TODO
+  example "can get total amount of inserted money and list of purchasable drinks" do
+    coke = Drink.new(price: 120, name: "coke")
+    redbull = Drink.new(price: 200 , name: "redbull")
+    water = Drink.new(price: 120, name: "water")
+    vending_machine.store(coke, 10)
+    vending_machine.store(redbull, 10)
+    vending_machine.store(water, 10)
+
+    vending_machine.insert_money(500)
+    expect(vending_machine.collected_amount).to eq(500)
+    expect(vending_machine.purchasable_drinks).to eq([:coke, :redbull, :water])
+  end
 end

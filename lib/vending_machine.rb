@@ -40,4 +40,14 @@ class VendingMachine
   def sales_amount
     @sales_amount
   end
+
+  def purchasable_drinks
+    purchasable_drinks = []
+    @stock.each do |drink|
+      if drink[1][:price] <= @collected_amount
+        purchasable_drinks << drink[0]
+      end
+    end
+    purchasable_drinks
+  end
 end
