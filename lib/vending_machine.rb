@@ -34,7 +34,7 @@ class VendingMachine
     @stock[drink.name.to_sym][:count] -= 1
     @collected_amount -= drink.price
     @sales_amount += drink.price
-    drink
+    { drink: drink, balance: @collected_amount.tap { @collected_amount = 0 } }
   end
 
   def sales_amount

@@ -73,7 +73,7 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.insert_money(10))
     expect(vending_machine.insert_money(10))
     expect(vending_machine.insert_money(100))
-    expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    expect(vending_machine.purchase_drink(coke)).to eq ({ drink: coke, balance: 0 })
     expect(vending_machine.collected_amount).to eq(0)
     expect(vending_machine.sales_amount).to eq(120)
   end
@@ -94,7 +94,7 @@ RSpec.describe 'Vending Machine' do
     vending_machine.insert_money(100)
     vending_machine.insert_money(10)
     vending_machine.insert_money(10)
-    expect(vending_machine.purchase_drink(coke)).to eq(coke)
+    expect(vending_machine.purchase_drink(coke)).to eq ({ drink: coke, balance: 0 })
     expect(vending_machine.sales_amount).to eq(120)
     expect(vending_machine.stored_drinks[:coke][:count]).to eq(4)
   end
@@ -108,7 +108,6 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.stored_drinks[:coke][:count]).to eq(5)
   end
 
-  # TODO: confirm later
   example "purchase is executed when Coke can NOT be purchased, do nothing" do
     coke = Drink.new(price: 120, name: "coke")
     vending_machine.store(coke, 0)
@@ -121,41 +120,38 @@ RSpec.describe 'Vending Machine' do
     coke = Drink.new(price: 120, name: "coke")
     vending_machine.store(coke, 10)
     vending_machine.insert_money(1000)
-    5.times do
-      expect(vending_machine.purchase_drink(coke)).to eq(coke)
-    end
-    expect(vending_machine.sales_amount).to eq(600)
+    expect(vending_machine.purchase_drink(coke)).to eq({drink: coke, balance: 880})
+    expect(vending_machine.sales_amount).to eq(120)
   end
 
   example "Can get current sales amount when insufficient balance" do
     coke = Drink.new(price: 120, name: "coke")
     vending_machine.store(coke, 10)
     vending_machine.insert_money(500)
-    4.times do
-      expect(vending_machine.purchase_drink(coke)).to eq(coke)
-    end
+    expect(vending_machine.purchase_drink(coke)).to eq({drink: coke, balance: 380})
     expect(vending_machine.purchase_drink(coke)).to eq(false)
-    expect(vending_machine.sales_amount).to eq(480)
+    expect(vending_machine.sales_amount).to eq(120)
   end
 
   example "refund is executed, refund money" do
     coke = Drink.new(price: 120, name: "coke")
     vending_machine.store(coke, 10)
     vending_machine.insert_money(500)
-    4.times do
-      expect(vending_machine.purchase_drink(coke)).to eq(coke)
-    end
-    expect(vending_machine.refund).to eq(20)
+
+    expect(vending_machine.purchase_drink(coke)).to eq({drink: coke, balance: 380})
+
+    expect(vending_machine.refund).to eq(0)
   end
 
   example "refund is 0 when purchased for full amount" do
     coke = Drink.new(price: 120, name: "coke")
     vending_machine.store(coke, 10)
-    vending_machine.insert_money(500)
     vending_machine.insert_money(100)
-    5.times do
-      expect(vending_machine.purchase_drink(coke)).to eq(coke)
-    end
+    vending_machine.insert_money(10)
+    vending_machine.insert_money(10)
+
+    expect(vending_machine.purchase_drink(coke)).to eq({drink: coke, balance: 0})
+
     expect(vending_machine.refund).to eq(0)
   end
 
@@ -171,8 +167,6 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.stored_drinks[:water][:count]).to eq(10)
   end
 
-
-  #TODO - confirm whether output should be drink name or all drink details
   example "can get total amount of inserted money and list of purchasable drinks" do
     coke = Drink.new(price: 120, name: "coke")
     redbull = Drink.new(price: 200 , name: "redbull")
@@ -185,4 +179,15 @@ RSpec.describe 'Vending Machine' do
     expect(vending_machine.collected_amount).to eq(500)
     expect(vending_machine.purchasable_drinks).to eq([:coke, :redbull, :water])
   end
+
+  example "purchase is executed when a drink can be purchased, output refund" do
+    coke = Drink.new(price: 120, name: "coke")
+    vending_machine.store(coke, 1)
+    vending_machine.insert_money(500)
+
+    expect(vending_machine.collected_amount).to eq(500)
+    expect(vending_machine.purchase_drink(coke)).to eq ({ drink: coke, balance: 380 })
+    expect(vending_machine.collected_amount).to eq(0)
+  end
+
 end
